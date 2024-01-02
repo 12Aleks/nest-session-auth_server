@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 //import config module for .env
 import { ConfigModule } from '@nestjs/config';
 
@@ -17,6 +15,7 @@ import entries from "./typeorm";
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    UsersModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.HOST,
@@ -27,10 +26,6 @@ import entries from "./typeorm";
       entities: [...entries],
       synchronize: true,
     }),
-    UsersModule
-
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
