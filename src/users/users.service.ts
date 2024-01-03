@@ -25,4 +25,8 @@ export class UsersService {
 
     }
 
+    getAllUsers(){
+        return this.userRepository.find()
+    }
+
 }

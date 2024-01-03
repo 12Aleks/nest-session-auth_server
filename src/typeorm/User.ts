@@ -7,7 +7,8 @@ export class User{
     id: number;
 
     @Column({
-        type: "text"
+        type: "text",
+        nullable: false
     })
     password: string;
 
