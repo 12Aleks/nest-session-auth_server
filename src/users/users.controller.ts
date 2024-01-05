@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import {UsersService} from "./users.service";
 import {CreateUserDto} from "./dto/CreateUser.dto";
-import {ResponseUserData} from "./types/types";
+import {IUser, ResponseUserData} from "./types/types";
 import {use} from "passport";
 
 @Controller('users')
@@ -20,20 +20,17 @@ export class UsersController {
 
     @Post('create')
     @UsePipes(ValidationPipe)
-    createUser(@Body() dto: CreateUserDto){
+    createUser(@Body() dto: CreateUserDto): Promise<IUser>{
         return this.usersService.createUser(dto)
     }
 
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
-    async getAllUsers(){
-        const users = await this.usersService.getAllUsers();
-        if(users) {
-            const clearUsersData = users.map(user => new ResponseUserData(user));
-            return clearUsersData;
-        }
-        else{
-            throw new HttpException('User list not found', HttpStatus.NOT_FOUND)
-        }
+    async getAllUsers(): Promise<ResponseUserData[] | HttpException>{
+        const users: IUser[] = await this.usersService.getAllUsers();
+
+        if(users) return users.map(user => new ResponseUserData(user));
+
+        else throw new HttpException('User list not found', HttpStatus.NOT_FOUND);
     }
 }

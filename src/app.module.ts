@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 //database
 import {TypeOrmModule} from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import entries from "./typeorm";
 
@@ -26,6 +27,7 @@ import entries from "./typeorm";
       entities: [...entries],
       synchronize: true,
     }),
+    AuthModule,
   ],
 })
 export class AppModule {}

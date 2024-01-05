@@ -29,4 +29,8 @@ export class UsersService {
         return this.userRepository.find()
     }
 
+    getOneByEmail(email: string){
+        return this.userRepository.findOneBy({email: email})
+    }
+
 }
