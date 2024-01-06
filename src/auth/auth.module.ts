@@ -3,7 +3,7 @@ import {AuthService} from './auth.service';
 import {UsersService} from "../users/users.service";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {User} from "../typeorm";
-import {LocalStrategy} from "../utils/LocalStrategy";
+import {LocalStrategy} from "./utils/LocalStrategy";
 import {PassportModule} from "@nestjs/passport";
 import { AuthController } from './auth.controller';
 

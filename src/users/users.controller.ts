@@ -18,12 +18,6 @@ import {use} from "passport";
 export class UsersController {
     constructor(@Inject('USERS_SERVICE') private readonly usersService: UsersService) {}
 
-    @Post('create')
-    @UsePipes(ValidationPipe)
-    createUser(@Body() dto: CreateUserDto): Promise<IUser>{
-        return this.usersService.createUser(dto)
-    }
-
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
     async getAllUsers(): Promise<ResponseUserData[] | HttpException>{

@@ -9,11 +9,12 @@ import {comparePassword} from "../utils/bcrypt";
 export class AuthService {
     constructor(@Inject("USERS_SERVICE") private readonly usersService: UsersService){}
 
-    async validateUser(dto: AuthDto){
-       const candidate: IUser = await this.usersService.getOneByEmail(dto.email)
+    async validateUser(email: string, password: string){
+       console.log(password, email)
+       const candidate: IUser = await this.usersService.getOneByEmail(email)
        if(!candidate) throw new HttpException('User not exist', HttpStatus.NOT_FOUND);
 
-       const checkPassword = await comparePassword(dto.password, candidate.password);
+       const checkPassword = await comparePassword(password, candidate.password);
        if(!checkPassword) throw new HttpException('The password is not correct', HttpStatus.UNAUTHORIZED);
 
        if(candidate && checkPassword){
