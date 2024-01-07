@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import entries from "./typeorm";
+import {PassportModule} from "@nestjs/passport";
 
 
 @Module({
@@ -28,6 +29,10 @@ import entries from "./typeorm";
       synchronize: true,
     }),
     AuthModule,
+    PassportModule.register({
+      //passport has been connected with the session
+      session: true
+    }),
   ],
 })
 export class AppModule {}

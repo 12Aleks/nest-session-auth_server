@@ -30,8 +30,11 @@ export class UsersService {
     }
 
     getOneByEmail(email: string){
-        console.log(email)
         return this.userRepository.findOneBy({email: email})
+    }
+
+    getOneById(id){
+        return this.userRepository.findOneBy({id: id})
     }
 
 }
