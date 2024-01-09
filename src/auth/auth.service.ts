@@ -10,7 +10,6 @@ export class AuthService {
     constructor(@Inject("USERS_SERVICE") private readonly usersService: UsersService){}
 
     async validateUser(email: string, password: string){
-       console.log(password, email)
        const candidate: IUser = await this.usersService.getOneByEmail(email)
        if(!candidate) throw new HttpException('User not exist', HttpStatus.NOT_FOUND);
 

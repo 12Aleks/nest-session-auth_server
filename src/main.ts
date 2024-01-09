@@ -12,8 +12,15 @@ async function bootstrap() {
     app.setGlobalPrefix('api');
     app.use(
         session({
-            name: 'custom_session',
+            name: process.env.SESSION_NAME,
             secret: process.env.SESSION_KEY,
+            cookie: {
+                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
+                httpOnly: true,
+                sameSite: "lax", //protecting csrf
+                // secure:__prod__  //cookie only works in https
+                //  secure:__prod__
+            },
             resave: false,
             saveUninitialized: false
         })

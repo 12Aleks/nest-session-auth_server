@@ -5,18 +5,18 @@ import {
     Inject,
     Post,
     Request,
+    Response,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
-import {AuthDto, RegistrationDto} from "./dto/Auth.dto";
+import { RegistrationDto} from "./dto/Auth.dto";
 import {AuthService} from "./auth.service";
 import {UsersService} from "../users/users.service";
-import { AuthGuard } from '@nestjs/passport';
 import {ResponseUserData} from "../users/types/types";
-import {Request as Req} from 'express'
+import {Request as Req, Response as Res} from 'express'
 import {AuthenticatedGuard} from "./utils/Authenticated.guard";
-import {LocalStrategy} from "./utils/LocalStrategy";
 import {LocalAuthGuard} from "./utils/Local.auth.guard";
+import process from "process";
 
 @Controller('auth')
 export class AuthController {
@@ -31,10 +31,30 @@ export class AuthController {
         const newUser = await this.usersService.createUser(dto);
         return new ResponseUserData(newUser);
     }
+
+    //with passport
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Request() req: Req) {
         return req.user;
+    }
+
+    @Get('logout')
+    async logout(@Request() req: Req){
+        req.session.destroy(function (err){
+            if(err){
+                console.log(err);
+            }else{
+                req.session = null;
+                // res.clearCookie('custom_session', {
+                //     path: '/', // Match the path used when setting the cookie
+                //     httpOnly: true, // Match other cookie options if set during initialization
+                //     sameSite: "lax",
+                // });
+
+            }
+        });
+        return {msg: 'The user session has ended'}
     }
 
 
