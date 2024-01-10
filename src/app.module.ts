@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import * as process from "process";
 import entries from "./typeorm";
 import {PassportModule} from "@nestjs/passport";
+import { PostsModule } from './posts/posts.module';
 
 
 @Module({
@@ -33,6 +34,7 @@ import {PassportModule} from "@nestjs/passport";
       //passport has been connected with the session
       session: true
     }),
+    PostsModule,
   ],
 })
 export class AppModule {}

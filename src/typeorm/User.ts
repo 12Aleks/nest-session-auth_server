@@ -1,4 +1,5 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Post} from "./Post";
 
 
 @Entity()
@@ -34,4 +35,7 @@ export class User{
         onUpdate: "CURRENT_TIMESTAMP(6)"
     })
     updated_at: Date;
+
+    @OneToMany(() => Post, (post) => post.user)
+    posts: Post[]
 }

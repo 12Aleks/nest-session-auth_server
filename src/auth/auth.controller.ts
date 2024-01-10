@@ -40,18 +40,12 @@ export class AuthController {
     }
 
     @Get('logout')
-    async logout(@Request() req: Req){
+     logout(@Request() req: Req){
         req.session.destroy(function (err){
             if(err){
                 console.log(err);
             }else{
                 req.session = null;
-                // res.clearCookie('custom_session', {
-                //     path: '/', // Match the path used when setting the cookie
-                //     httpOnly: true, // Match other cookie options if set during initialization
-                //     sameSite: "lax",
-                // });
-
             }
         });
         return {msg: 'The user session has ended'}
