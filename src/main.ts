@@ -15,7 +15,7 @@ async function bootstrap() {
             name: process.env.SESSION_NAME,
             secret: process.env.SESSION_KEY,
             cookie: {
-                maxAge: 1000 * 60 * 60 * 24 * 365, //1year
+                maxAge: 300 * 1000, //5 minutes
                 httpOnly: true,
                 sameSite: "lax", //protecting csrf
                 // secure:__prod__  //cookie only works in https
