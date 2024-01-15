@@ -1,4 +1,5 @@
 import {Exclude} from "class-transformer";
+import {Post} from "../../typeorm";
 
 
 export class IUser{
@@ -17,6 +18,7 @@ export class ResponseUserData {
     password: string;
 
     username: string;
+
     email: string;
 
     @Exclude()
@@ -25,8 +27,18 @@ export class ResponseUserData {
     @Exclude()
     updated_at: Date;
 
+    posts: Post[]
+
 
     constructor(partial: Partial<ResponseUserData>) {
         Object.assign(this, partial)
+    }
+}
+
+export class ResponseUserWithPostsData extends ResponseUserData {
+    posts: Post[];
+
+    constructor(partial: Partial<ResponseUserData>) {
+        super(partial);
     }
 }

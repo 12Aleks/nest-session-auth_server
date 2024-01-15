@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Inject, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
 import {PostsService} from "./posts.service";
 import {CreatePostsDto} from "./dto/Posts.dto";
 import {AuthenticatedGuard} from "../auth/utils/Authenticated.guard";
@@ -18,9 +18,17 @@ export class PostsController {
         return this.postsServices.getAll()
     }
 
+
+    @UseGuards(AuthenticatedGuard)
     @Get(':id')
     getOne(@Param('id', ParseIntPipe) id: number){
         return this.postsServices.getOne(id)
+    }
+
+    @UseGuards(AuthenticatedGuard)
+    @Delete(':id')
+    deleteOne(@Param('id', ParseIntPipe) id: number){
+       return this.postsServices.deleteOne(id)
     }
 
 }

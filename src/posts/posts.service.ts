@@ -40,7 +40,7 @@ export class PostsService {
     }
 
     async getOne(id: number){
-        return await this.postsRepository.findOne({
+         const post =  await this.postsRepository.findOne({
             //find one by id and returned with the user model, only id and username fields
             where: {id},
             relations: ["user"],
@@ -55,5 +55,22 @@ export class PostsService {
              }
             }
         );
+        if(!post) throw new HttpException(`The post with id: ${id} not found`, HttpStatus.NOT_FOUND);
+
+        return post
+    }
+
+    async deleteOne(id: number){
+        const postToDelete = await this.postsRepository.findOne({
+            where: {id},
+            relations: ['user'],
+        });
+
+        if (!postToDelete) {
+            throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+        }
+
+        await this.postsRepository.remove(postToDelete);
+
     }
 }

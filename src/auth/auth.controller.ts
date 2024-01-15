@@ -4,8 +4,8 @@ import {
     Controller, Get,
     Inject,
     Post,
-    Request,
-    Response,
+    Req,
+    Res,
     UseGuards,
     UseInterceptors
 } from '@nestjs/common';
@@ -13,7 +13,7 @@ import { RegistrationDto} from "./dto/Auth.dto";
 import {AuthService} from "./auth.service";
 import {UsersService} from "../users/users.service";
 import {ResponseUserData} from "../users/types/types";
-import {Request as Req, Response as Res} from 'express'
+import {Request, Response} from 'express'
 import {AuthenticatedGuard} from "./utils/Authenticated.guard";
 import {LocalAuthGuard} from "./utils/Local.auth.guard";
 import process from "process";
@@ -35,26 +35,37 @@ export class AuthController {
     //with passport
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Request() req: Req) {
+    async login(@Req() req: Request) {
         return req.user;
     }
 
     @Get('logout')
-     logout(@Request() req: Req){
-        req.session.destroy(function (err){
-            if(err){
-                console.log(err);
-            }else{
-                req.session = null;
-            }
-        });
-        return {msg: 'The user session has ended'}
+    async logout(@Req() req: Request, @Res() res: Response) {
+        try {
+            await new Promise<void>((resolve, reject) => {
+                req.session.destroy((err) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        res.clearCookie('custom_session');
+                        req.session = null;
+                        resolve();
+                    }
+                });
+            });
+
+            res.json({ msg: 'The user session has ended' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'An error occurred during logout' });
+        }
     }
 
 
     @UseGuards(AuthenticatedGuard)
     @Get('protected')
-    async getUserStatus(@Request() req: Req){
+    async getUserStatus(@Req() req: Request){
         return req.user;
     }
 }

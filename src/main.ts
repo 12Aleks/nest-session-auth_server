@@ -3,6 +3,7 @@ import {AppModule} from './app.module';
 import * as process from "process";
 import * as session from "express-session";
 import * as passport from "passport"
+import * as cookieParser from 'cookie-parser';
 
 
 const PORT = process.env.PORT || 5000
@@ -10,6 +11,7 @@ const PORT = process.env.PORT || 5000
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api');
+    app.use(cookieParser());
     app.use(
         session({
             name: process.env.SESSION_NAME,
