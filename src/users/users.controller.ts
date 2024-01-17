@@ -1,10 +1,10 @@
 import {
     Body,
     ClassSerializerInterceptor,
-    Controller,
+    Controller, Delete,
     Get, HttpException, HttpStatus,
-    Inject,
-    Post,
+    Inject, Param, ParseIntPipe,
+    Post, Put, UseGuards,
     UseInterceptors,
     UsePipes,
     ValidationPipe
@@ -13,6 +13,7 @@ import {UsersService} from "./users.service";
 import {CreateUserDto} from "./dto/CreateUser.dto";
 import {IUser, ResponseUserData} from "./types/types";
 import {use} from "passport";
+import {AuthenticatedGuard} from "../auth/utils/Authenticated.guard";
 
 @Controller('users')
 export class UsersController {
@@ -26,5 +27,21 @@ export class UsersController {
         if(users) return users.map(user => new ResponseUserData(user));
 
         else throw new HttpException('User list not found', HttpStatus.NOT_FOUND);
+    }
+
+    @UseGuards(AuthenticatedGuard)
+    @Get(':id')
+    getUser(@Param('id', ParseIntPipe) id: number){
+        return this.usersService.getOneById(id)
+    }
+    @UseGuards(AuthenticatedGuard)
+    @Delete(':id')
+    deleteUser(@Param('id', ParseIntPipe) id: number){
+
+    }
+    @UseGuards(AuthenticatedGuard)
+    @Put(':id')
+    updateOne(@Param('id', ParseIntPipe) id: number){
+
     }
 }

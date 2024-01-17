@@ -10,3 +10,8 @@ export class CreatePostsDto{
     @IsNotEmpty()
     description: string;
 }
+
+export class UpdatePostDto{
+    title: string
+    description: string
+}

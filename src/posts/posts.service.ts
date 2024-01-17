@@ -1,8 +1,8 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {Post, User} from "../typeorm";
-import {CreatePostsDto} from "./dto/Posts.dto";
+import {CreatePostsDto, UpdatePostDto} from "./dto/Posts.dto";
 
 
 @Injectable()
@@ -18,7 +18,8 @@ export class PostsService {
         if(!findUserByID) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 
         const newPost = this.postsRepository.create({
-            ...dto,
+             title: dto.title,
+             description: dto.description,
              user: {
                 id: findUserByID.id,
                 username: findUserByID.username
@@ -72,5 +73,21 @@ export class PostsService {
 
         await this.postsRepository.remove(postToDelete);
 
+        return {msg: `Post with ${ id } has been deleted`}
+
+    }
+
+
+    async updateOne(id: number, dto: UpdatePostDto){
+        const post = await this.postsRepository.findOneBy({id});
+        if (!post) throw new NotFoundException(`Post with id ${id} not found`);
+
+        // Update the post properties
+        post.title = dto.title || post.title;
+        post.description = dto.description || post.description;
+
+        await this.postsRepository.save(post);
+
+        return post;
     }
 }
