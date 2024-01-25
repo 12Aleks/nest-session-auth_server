@@ -20,6 +20,7 @@ export class UsersController {
     constructor(@Inject('USERS_SERVICE') private readonly usersService: UsersService) {}
 
     @UseInterceptors(ClassSerializerInterceptor)
+    @UseGuards(AuthenticatedGuard)
     @Get()
     async getAllUsers(): Promise<ResponseUserData[] | HttpException>{
         const users: IUser[] = await this.usersService.getAllUsers();

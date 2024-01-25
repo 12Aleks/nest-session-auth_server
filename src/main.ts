@@ -17,11 +17,9 @@ async function bootstrap() {
             name: process.env.SESSION_NAME,
             secret: process.env.SESSION_KEY,
             cookie: {
-                maxAge: 300 * 1000, //5 minutes
+                maxAge: 300 * 1000, //5 minutes (test time)
                 httpOnly: true,
-                sameSite: "lax", //protecting csrf
-                // secure:__prod__  //cookie only works in https
-                //  secure:__prod__
+                sameSite: "lax",
             },
             resave: false,
             saveUninitialized: false
@@ -29,6 +27,12 @@ async function bootstrap() {
     );
     app.use(passport.initialize())
     app.use(passport.session())
+
+    //update cookies maxAge with new queries (this is app.use and UpdateMaxAgeMiddleware)
+    app.use(function (req, res, next) {
+        req.session.nowInMinutes = Math.floor(Date.now() / 60e3);
+        next();
+    })
 
     await app.listen(PORT, () => console.log(`Nest app worked on port - ${PORT}`));
 

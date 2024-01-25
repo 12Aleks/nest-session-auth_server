@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 //import config module for .env
 import { ConfigModule } from '@nestjs/config';
 
@@ -10,6 +10,7 @@ import * as process from "process";
 import entries from "./typeorm";
 import {PassportModule} from "@nestjs/passport";
 import { PostsModule } from './posts/posts.module';
+import {UpdateMaxAgeMiddleware} from "./auth/utils/UpdateMaxAgeMiddleware.middleware";
 
 
 @Module({
@@ -37,4 +38,10 @@ import { PostsModule } from './posts/posts.module';
     PostsModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+        .apply(UpdateMaxAgeMiddleware)
+        .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
