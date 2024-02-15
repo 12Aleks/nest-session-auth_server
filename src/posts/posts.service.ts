@@ -14,8 +14,13 @@ export class PostsService {
 
 
     async createPost( dto: CreatePostsDto){
+
+
         const findUserByID = await this.userRepository.findOneBy({id: dto.id})
+
         if(!findUserByID) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+
+        console.log(findUserByID)
 
         const newPost = this.postsRepository.create({
              title: dto.title,
@@ -25,7 +30,6 @@ export class PostsService {
                 username: findUserByID.username
              }
         })
-
         return this.postsRepository.save(newPost)
     }
 

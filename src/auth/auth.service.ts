@@ -10,7 +10,8 @@ export class AuthService {
     constructor(@Inject("USERS_SERVICE") private readonly usersService: UsersService){}
 
     async validateUser(email: string, password: string){
-       const candidate: IUser = await this.usersService.getOneByEmail(email)
+       const candidate: IUser = await this.usersService.getOneByEmail(email);
+
        if(!candidate) throw new HttpException('User not exist', HttpStatus.NOT_FOUND);
 
        const checkPassword = await comparePassword(password, candidate.password);
@@ -23,6 +24,7 @@ export class AuthService {
                created_at: candidate.created_at
            }
        }
+
         return null;
 
     }

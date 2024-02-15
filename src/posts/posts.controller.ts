@@ -25,7 +25,7 @@ export class PostsController {
         return this.postsServices.getOne(id)
     }
 
-    @UseGuards(AuthenticatedGuard)
+    // @UseGuards(AuthenticatedGuard)
     @Delete(':id')
     deleteOne(@Param('id', ParseIntPipe) id: number){
        return this.postsServices.deleteOne(id)

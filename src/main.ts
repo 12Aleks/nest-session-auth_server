@@ -4,28 +4,63 @@ import * as process from "process";
 import * as session from "express-session";
 import * as passport from "passport"
 import * as cookieParser from 'cookie-parser';
+import {SessionEntity} from "./typeorm";
+import {TypeormStore} from "connect-typeorm";
+import { DataSource } from 'typeorm';
+
+const fs = require("fs");
 
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
+
+const httpsOptions = {
+    key: fs.readFileSync("./src/cert/localhost-key.pem"),
+    cert: fs.readFileSync("./src/cert/localhost.pem")
+};
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.enableCors();
+    const app = await NestFactory.create(AppModule, { cors: true, httpsOptions });
+    const sessionRepository =  app.get(DataSource).getRepository(SessionEntity);
+
+
+    app.use((req, res, next) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+        res.setHeader(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization',
+        );
+        next();
+    });
+
+    app.enableCors(
+        {
+            origin: 'https://localhost:5000',
+            credentials: true
+        }
+    );
+
+
     app.setGlobalPrefix('api');
-    app.use(cookieParser());
+    app.use(cookieParser());// To parse the incoming cookies
     app.use(
         session({
-            name: process.env.SESSION_NAME,
+            name: process.env.SESSION_NAME ,
             secret: process.env.SESSION_KEY,
-            cookie: {
-                maxAge: 300 * 1000, //5 minutes (test time)
-                httpOnly: true,
-                sameSite: "lax",
-            },
             resave: false,
-            saveUninitialized: false
+            saveUninitialized: false,
+            cookie: {
+                maxAge: 6*60*60*1000,
+                httpOnly: true,
+                // sameSite:'none',
+                // secure:false,
+            },
+            store: new TypeormStore().connect(sessionRepository),
         })
     );
+
+
+
     app.use(passport.initialize())
     app.use(passport.session())
 

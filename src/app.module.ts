@@ -7,7 +7,7 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import * as process from "process";
-import entries from "./typeorm";
+import entries, {SessionEntity} from "./typeorm";
 import {PassportModule} from "@nestjs/passport";
 import { PostsModule } from './posts/posts.module';
 import {UpdateMaxAgeMiddleware} from "./auth/utils/UpdateMaxAgeMiddleware.middleware";
@@ -20,6 +20,7 @@ import {UpdateMaxAgeMiddleware} from "./auth/utils/UpdateMaxAgeMiddleware.middle
       isGlobal: true,
     }),
     UsersModule,
+    TypeOrmModule.forFeature([SessionEntity]),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.HOST,
