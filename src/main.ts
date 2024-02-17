@@ -19,12 +19,14 @@ const httpsOptions = {
 };
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true, httpsOptions });
+    const app = await NestFactory.create(AppModule, { cors: true,
+        httpsOptions
+    });
     const sessionRepository =  app.get(DataSource).getRepository(SessionEntity);
 
 
     app.use((req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Origin', 'https://localhost:5000');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
         res.setHeader(
             'Access-Control-Allow-Headers',
@@ -42,7 +44,7 @@ async function bootstrap() {
 
 
     app.setGlobalPrefix('api');
-    app.use(cookieParser());// To parse the incoming cookies
+    // app.use(cookieParser());// To parse the incoming cookies
     app.use(
         session({
             name: process.env.SESSION_NAME ,
@@ -51,9 +53,9 @@ async function bootstrap() {
             saveUninitialized: false,
             cookie: {
                 maxAge: 6*60*60*1000,
-                httpOnly: true,
+                // httpOnly: true,
                 // sameSite:'none',
-                // secure:false,
+                // secure: true,
             },
             store: new TypeormStore().connect(sessionRepository),
         })
@@ -73,5 +75,6 @@ async function bootstrap() {
     await app.listen(PORT, () => console.log(`Nest app worked on port - ${PORT}`));
 
 }
+
 
 bootstrap();
